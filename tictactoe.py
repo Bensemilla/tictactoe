@@ -29,10 +29,6 @@ def display_board(board):
           '+-------+-------+-------+\n')
 
 
-
-
-
-
 def enter_move(board):
     # The function accepts the board's current status, asks the user about their move, 
     # checks the input, and updates the board according to the user's decision.
@@ -62,14 +58,7 @@ def enter_move(board):
             
         except ValueError:
             print("This is not a number, please choose a valid number!")
-
-        
-                      
-
-
-
-
-
+            
 
 def make_list_of_free_fields(board):
     # The function browses the board and builds a list of all the free squares; 
@@ -83,28 +72,41 @@ def make_list_of_free_fields(board):
             else:
                 free_moves.append((i,j))
 
+    if not free_moves:
+        print("It's a tie!")
+        return False
+
+    return True
 
 
-
-
-
-
-#def victory_for(board, sign):
+def victory_for(board, sign):
     # The function analyzes the board's status in order to check if 
     # the player using 'O's or 'X's has won the game
+    winning_conditions = [[(0,0),(1,1),(2,2)],
+                          [(2,0),(1,1),(0,2)],
+                          [(0,0),(1,0),(2,0)],
+                          [(0,1),(1,1),(2,1)],
+                          [(0,2),(1,2),(2,2)],
+                          [(0,0),(0,1),(0,2)],
+                          [(1,0),(1,1),(1,2)],
+                          [(2,0),(2,1),(2,2)]]
+    victory_list = []
+      
+    for i in range(len(board)):
+            for j in range(len(board[i])):
+                if board[i][j] == sign:
+                    victory_list.append((i, j))
 
+    for i in range(len(winning_conditions)):
+        if set(winning_conditions[i]).issubset(set(victory_list)):
+            print(f"We have a winner, its {sign}!!!")
+            return False
 
-
-
-
-
+    return True
 
 
 def draw_move(board):
     # The function draws the computer's move and updates the board.
-
-    
-
     while True:
         
         if board[1][1] == 5:
@@ -114,7 +116,6 @@ def draw_move(board):
         move_coords = 0
         comp_move = random.randrange(1,10)
 
-        
         for i in range(len(board)):
             for j in range(len(board[i])):
                 if board[i][j] == comp_move:
@@ -130,18 +131,15 @@ def draw_move(board):
 
 
 
-
-
-
-
-
-
 def main():
     
     #Initializing the base board:
     
-    
+
     board = [[1,4,7],[2,5,8],[3,6,9]]
+
+    global no_victor
+    no_victor = True
 
 
     #Initializing game:
@@ -153,62 +151,29 @@ def main():
                         "are you ready to begin? Type 'y' to start, or 'n' to cancel: ")
 
     if game_status == 'y':
+
+        while no_victor:
         
-        make_list_of_free_fields(board)
+            no_victor = make_list_of_free_fields(board)
 
-        draw_move(board)
+            draw_move(board)
+            print("Computer is thinking....")
+            time.sleep(1)
+            display_board(board)
+            no_victor = victory_for(board, 'X')
 
-        print("Computer is thinking....")
-        time.sleep(1)
+            if no_victor == False:
+                break
 
-        display_board(board)
+            no_victor = make_list_of_free_fields(board)
+            if no_victor == False:
+                break
 
-        make_list_of_free_fields(board)
-
-        enter_move(board)
-
-        display_board(board)
-
-        make_list_of_free_fields(board)
-
-
-        draw_move(board)
-        
-        print("Computer is thinking....")
-        time.sleep(1)
-
-        display_board(board)
-
-        
-        
-
-            
-            
-            
-        
-
+            enter_move(board)
+            display_board(board)
+            no_victor = victory_for(board, 'O')
             
 
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        
 if __name__ == '__main__':
     main()

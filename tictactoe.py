@@ -1,7 +1,9 @@
-from random import randrange
+import random
+import time
 
 def display_board(board):
-
+    # The function accepts one parameter containing the board's current status
+    # and prints it out to the console.
     sq_1 = board[0][0]
     sq_2 = board[1][0]
     sq_3 = board[2][0]
@@ -11,8 +13,7 @@ def display_board(board):
     sq_7 = board[0][2]
     sq_8 = board[1][2]
     sq_9 = board[2][2]
-
-    
+ 
     print(' +-------+-------+-------+\n',
           '|       |       |       |\n',
           f'|   {sq_1}   |   {sq_2}   |   {sq_3}   |\n',
@@ -28,14 +29,64 @@ def display_board(board):
           '+-------+-------+-------+\n')
 
 
-#def enter_move(board):
+
+
+
+
+def enter_move(board):
     # The function accepts the board's current status, asks the user about their move, 
     # checks the input, and updates the board according to the user's decision.
+    while True:
+        try:
+            move_coords = 0
+            player_move = int(input("Please choose the field you want to play: "))
+
+            if player_move not in range(0,10):
+                print("Please choose a number thats on the board!")
+                continue
+
+            else:
+                for i in range(len(board)):
+                    for j in range(len(board[i])):
+                        if board[i][j] == player_move:
+                            move_coords = (i, j)
+                        else:
+                            continue
+            
+            if move_coords in free_moves:
+                board[move_coords[0]][move_coords[1]] = 'O'
+                break
+
+            else:
+                print("Field not available anymore!")
+            
+        except ValueError:
+            print("This is not a number, please choose a valid number!")
+
+        
+                      
 
 
-#def make_list_of_free_fields(board):
+
+
+
+
+def make_list_of_free_fields(board):
     # The function browses the board and builds a list of all the free squares; 
     # the list consists of tuples, while each tuple is a pair of row and column numbers.
+    global free_moves
+    free_moves = []
+    for i in range(len(board)):
+        for j in range(len(board[i])):
+            if board[i][j] == 'X' or board[i][j] == 'O':
+                continue
+            else:
+                free_moves.append((i,j))
+
+
+
+
+
 
 
 #def victory_for(board, sign):
@@ -43,15 +94,106 @@ def display_board(board):
     # the player using 'O's or 'X's has won the game
 
 
-#def draw_move(board):
+
+
+
+
+
+
+def draw_move(board):
     # The function draws the computer's move and updates the board.
 
-def main():
+    
 
+    while True:
+        
+        if board[1][1] == 5:
+            board[1][1] = 'X'
+            break
+
+        move_coords = 0
+        comp_move = random.randrange(1,10)
+
+        
+        for i in range(len(board)):
+            for j in range(len(board[i])):
+                if board[i][j] == comp_move:
+                    move_coords = (i, j)
+                else:
+                    continue
+        
+        if move_coords in free_moves:
+            board[move_coords[0]][move_coords[1]] = 'X'
+            break
+    
+
+
+
+
+
+
+
+
+
+
+def main():
+    
+    #Initializing the base board:
+    
     
     board = [[1,4,7],[2,5,8],[3,6,9]]
 
+
+    #Initializing game:
+    
+
     display_board(board)
+
+    game_status =input("This is the board and the computer has the first move,\n"
+                        "are you ready to begin? Type 'y' to start, or 'n' to cancel: ")
+
+    if game_status == 'y':
+        
+        make_list_of_free_fields(board)
+
+        draw_move(board)
+
+        print("Computer is thinking....")
+        time.sleep(1)
+
+        display_board(board)
+
+        make_list_of_free_fields(board)
+
+        enter_move(board)
+
+        display_board(board)
+
+        make_list_of_free_fields(board)
+
+
+        draw_move(board)
+        
+        print("Computer is thinking....")
+        time.sleep(1)
+
+        display_board(board)
+
+        
+        
+
+            
+            
+            
+        
+
+            
+
+
+
+
+
+    
 
 
 
